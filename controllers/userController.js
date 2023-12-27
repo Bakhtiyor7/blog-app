@@ -1,7 +1,5 @@
 const UserService = require("../models/user.service");
 let userController = module.exports;
-const express = require("express");
-const router = express.Router();
 const jwt = require("jsonwebtoken");
 const assert = require("assert");
 
