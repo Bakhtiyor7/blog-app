@@ -4,6 +4,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 const cookieParser = require("cookie-parser");
+let session = require("express-session");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +19,23 @@ app.use(
   })
 );
 app.use(cookieParser());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    cookie: {
+      maxAge: 1000 * 60 * 30, //for 1 minutes
+    },
+    store: store,
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
+app.use(function (req, res, next) {
+  res.locals.member = req.session.member;
+  next();
+});
 
 //database connection
 const database = process.env.MONGODB_URL;
