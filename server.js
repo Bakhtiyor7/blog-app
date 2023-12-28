@@ -9,9 +9,21 @@ let session = require("express-session");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// session store
+const MongoDBStore = require("connect-mongodb-session")(session);
+const store = new MongoDBStore({
+  uri: process.env.MONGODB_URL,
+  collection: "sessions",
+});
+
 //middlewares
 app.use(cors());
 app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 app.use(
   cors({
     credentials: true,
