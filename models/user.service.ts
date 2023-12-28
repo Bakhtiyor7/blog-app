@@ -39,7 +39,6 @@ class UserService {
 
   async loginData(data) {
     try {
-      console.log(data);
       const user = await this.user
         .findOne(
           {

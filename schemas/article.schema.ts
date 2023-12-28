@@ -1,5 +1,8 @@
-const mongoose = require("mongoose");
-const { article_enums, visibility_enums } = require("../lib/config");
+import {article_enums, visibility_enums} from "../lib/config";
+
+import mongoose from "mongoose";
+import {ArticleDocument} from "./interfaces/article.interface";
+
 const Schema = mongoose.Schema;
 
 const articleSchema = new mongoose.Schema(
@@ -44,4 +47,4 @@ const articleSchema = new mongoose.Schema(
 
 const Article = mongoose.model("article", articleSchema);
 
-module.exports = Article;
+export default Article;

@@ -1,13 +1,33 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const dotenv = require("dotenv");
+import express from "express"
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import session from 'express-session'
+// routes
+import router from "./router"
+import {Request, Response} from "express";
+
 dotenv.config();
-const cookieParser = require("cookie-parser");
-let session = require("express-session");
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+declare global {
+    namespace NodeJS {
+        interface ProcessEnv {
+            SESSION_SECRET: string;
+            MONGODB_URL: string;
+
+        }
+    }
+    namespace Express {
+        interface Request {
+            member?: any
+        }
+    }
+}
 
 // session store
 const MongoDBStore = require("connect-mongodb-session")(session);
@@ -44,7 +64,9 @@ app.use(
   })
 );
 
-app.use(function (req, res, next) {
+
+
+app.use(function (req: Request, res: Response, next) {
   res.locals.member = req.session.member;
   next();
 });
@@ -60,9 +82,6 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
   });
-
-// routes
-const router = require("./router");
 app.use("/", router);
 
 app.listen(PORT, () => {

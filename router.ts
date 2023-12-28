@@ -7,7 +7,7 @@ const articleController = require("./controllers/articleController");
 router.post("/signup", userController.signup);
 router.post("/login", userController.login);
 router.get("/logout", userController.logout);
-router.get("/check-user", userController.checkAuthentication);
+router.get("/check-login", userController.checkAuthentication);
 
 // blog
 router.post(
@@ -26,4 +26,4 @@ router.get(
   articleController.getAllArticles
 );
 
-module.exports = router;
+export default router
