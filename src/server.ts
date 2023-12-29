@@ -4,7 +4,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import session from "express-session";
-// routes
 import router from "./router";
 import { Request, Response } from "express";
 
@@ -79,6 +78,8 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
   });
+
+//routes
 app.use("/", router);
 
 app.listen(PORT, () => {
