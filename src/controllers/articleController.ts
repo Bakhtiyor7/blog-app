@@ -6,6 +6,7 @@ let articleController: any = {};
 
 articleController.createArticle = async (req: Request, res: Response) => {
   try {
+    console.log("Post: /createArticle");
     const articleService = new ArticleService();
     const result = await articleService.createArticleData(req.member, req.body);
     assert.ok(result, "Error creating article");
