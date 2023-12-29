@@ -1,7 +1,6 @@
-import {article_enums, visibility_enums} from "../lib/config";
+import { article_enums, visibility_enums } from "../lib/config";
 
 import mongoose from "mongoose";
-import {ArticleDocument} from "./interfaces/article.interface";
 
 const Schema = mongoose.Schema;
 
@@ -42,7 +41,7 @@ const articleSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Article = mongoose.model("article", articleSchema);

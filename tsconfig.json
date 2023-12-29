@@ -3,8 +3,9 @@
     "target": "es6",
     "module": "commonjs",
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "./src",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": ["./src/session.d.ts", "./src/express-session.d.ts"]
   }
 }

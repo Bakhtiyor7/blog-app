@@ -1,7 +1,8 @@
-const express = require("express");
+import { userController } from "./controllers/userController";
+import express from "express";
+import articleController from "./controllers/articleController";
+
 const router = express.Router();
-const userController = require("./controllers/userController");
-const articleController = require("./controllers/articleController");
 
 // authentication routes
 router.post("/signup", userController.signup);
@@ -13,17 +14,17 @@ router.get("/check-login", userController.checkAuthentication);
 router.post(
   "/blog/create",
   userController.retrieveAuthMember,
-  articleController.createArticle
+  articleController.createArticle,
 );
 router.get(
   "/blog/user-articles",
   userController.retrieveAuthMember,
-  articleController.getUserArticles
+  articleController.getUserArticles,
 );
 router.get(
   "/blog/all-articles",
   userController.retrieveAuthMember,
-  articleController.getAllArticles
+  articleController.getAllArticles,
 );
 
-export default router
+export default router;

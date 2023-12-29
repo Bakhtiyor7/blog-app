@@ -1,7 +1,6 @@
 import { shapeIntoMongooseObjectId } from "../lib/config";
 import Article from "../schemas/article.schema";
 import { Types } from "mongoose";
-import { ArticleDocument } from "../schemas/interfaces/article.interface";
 
 class ArticleService {
   constructor(private readonly articleSchema = Article) {}

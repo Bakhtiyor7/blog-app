@@ -1,32 +1,31 @@
-import express from "express"
+import express, { NextFunction } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import session from 'express-session'
+import session from "express-session";
 // routes
-import router from "./router"
-import {Request, Response} from "express";
+import router from "./router";
+import { Request, Response } from "express";
 
 dotenv.config();
-
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 declare global {
-    namespace NodeJS {
-        interface ProcessEnv {
-            SESSION_SECRET: string;
-            MONGODB_URL: string;
-
-        }
+  namespace NodeJS {
+    interface ProcessEnv {
+      SESSION_SECRET: string;
+      MONGODB_URL: string;
+      SECRET_TOKEN: string;
     }
-    namespace Express {
-        interface Request {
-            member?: any
-        }
+  }
+  namespace Express {
+    interface Request {
+      member?: any;
     }
+  }
 }
 
 // session store
@@ -42,13 +41,13 @@ app.use(express.json());
 app.use(
   express.urlencoded({
     extended: true,
-  })
+  }),
 );
 app.use(
   cors({
     credentials: true,
     origin: true,
-  })
+  }),
 );
 app.use(cookieParser());
 
@@ -61,12 +60,10 @@ app.use(
     store: store,
     resave: true,
     saveUninitialized: true,
-  })
+  }),
 );
 
-
-
-app.use(function (req: Request, res: Response, next) {
+app.use(function (req: Request, res: Response, next: NextFunction) {
   res.locals.member = req.session.member;
   next();
 });

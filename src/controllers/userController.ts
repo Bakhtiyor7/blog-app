@@ -1,9 +1,12 @@
-const UserService = require("../models/user.service");
-let userController = module.exports;
-const jwt = require("jsonwebtoken");
-const assert = require("assert");
+import UserService from "../models/user.service";
+import jwt from "jsonwebtoken";
+import assert from "assert";
+import { NextFunction, Request, Response } from "express";
+import { TokenData } from "./interfaces/user.interface";
 
-userController.signup = async (req, res) => {
+let userController: any = {};
+
+userController.signup = async (req: Request, res: Response) => {
   try {
     console.log("Post: /signup");
     const data = req.body,
@@ -17,13 +20,13 @@ userController.signup = async (req, res) => {
       httpOnly: false,
     });
     res.json({ state: "success", data: new_user });
-  } catch (err) {
+  } catch (err: any) {
     console.log("Error: cont/signup", err.message);
     res.json({ state: "fail", message: err.message });
   }
 };
 
-userController.login = async (req, res) => {
+userController.login = async (req: Request, res: Response) => {
   try {
     console.log("Post: /login");
 
@@ -38,20 +41,21 @@ userController.login = async (req, res) => {
       httpOnly: false,
     });
     res.json({ state: "success", data: result });
-  } catch (err) {
+  } catch (err: any) {
     console.log("Error: cont/login", err.message);
     res.json({ state: "fail", message: err.message });
   }
 };
 
-userController.logout = (req, res) => {
+userController.logout = (req: Request, res: Response) => {
   console.log("GET cont/logout");
+
   res.cookie("access_token", null, { maxAge: 0, httpOnly: true });
   res.json({ state: "success", data: "Logged out successfully!" });
 };
 
 // token creation logic
-userController.createToken = (result) => {
+userController.createToken = (result: TokenData) => {
   try {
     const upload_data = {
       _id: result._id,
@@ -71,7 +75,7 @@ userController.createToken = (result) => {
   }
 };
 
-userController.checkAuthentication = (req, res) => {
+userController.checkAuthentication = (req: Request, res: Response) => {
   try {
     console.log("Get: /checkAuthentication");
     let token = req.cookies["access_token"];
@@ -86,13 +90,19 @@ userController.checkAuthentication = (req, res) => {
   }
 };
 
-userController.retrieveAuthMember = (req, res, next) => {
+userController.retrieveAuthMember = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const token = req.cookies["access_token"];
     req.member = token ? jwt.verify(token, process.env.SECRET_TOKEN) : null;
     next();
-  } catch (err) {
+  } catch (err: any) {
     console.log(`ERROR, cont/retrieveAuthMember, ${err.message}`);
     next();
   }
 };
+
+export { userController };

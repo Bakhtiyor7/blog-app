@@ -1,15 +1,14 @@
-const User = require("../schemas/user.schema");
-const bcrypt = require("bcrypt");
-const assert = require("assert");
+import User from "../schemas/user.schema";
+import bcrypt from "bcrypt";
+import assert from "assert";
+import { UserData } from "../controllers/interfaces/user.interface";
 
 class UserService {
-  constructor() {
-    this.user = User;
-  }
+  constructor(private readonly userModel = User) {}
 
-  async createUser(data) {
+  async createUser(data: UserData) {
     try {
-      const exist = await User.findOne({
+      const exist = await this.userModel.findOne({
         user_id: data.user_id,
       });
       if (exist) {
@@ -18,7 +17,7 @@ class UserService {
 
       const salt = await bcrypt.genSalt();
       data.password = await bcrypt.hash(data.password, salt);
-      const new_user = new this.user(data);
+      const new_user = new this.userModel(data);
 
       let result;
       try {
@@ -37,14 +36,14 @@ class UserService {
     }
   }
 
-  async loginData(data) {
+  async loginData(data: UserData) {
     try {
-      const user = await this.user
+      const user = await this.userModel
         .findOne(
           {
             user_id: data.user_id,
           },
-          { user_id: 1, password: 1 }
+          { user_id: 1, password: 1 },
         )
         .exec();
 
@@ -54,7 +53,7 @@ class UserService {
 
       assert.ok(isMatch, "User credentials do not  match");
 
-      return await this.user
+      return await this.userModel
         .findOne({
           user_id: data.user_id,
         })
@@ -65,4 +64,4 @@ class UserService {
   }
 }
 
-module.exports = UserService;
+export default UserService;
