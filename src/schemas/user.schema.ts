@@ -1,15 +1,18 @@
 import mongoose from "mongoose";
 
+export interface IUser extends Document {
+  id: mongoose.Types.ObjectId;
+  google_id?: string;
+  email: string;
+  user_name: string;
+  password: string;
+}
+
 const userSchema = new mongoose.Schema(
   {
-    user_id: {
+    google_id: {
       type: String,
-      required: true,
-      index: { unique: true, sparse: true },
-    },
-    user_name: {
-      type: String,
-      required: true,
+      required: false,
       index: { unique: true, sparse: true },
     },
     email: {
@@ -18,15 +21,20 @@ const userSchema = new mongoose.Schema(
       required: true,
       index: { unique: true, sparse: true },
     },
+    user_name: {
+      type: String,
+      required: false,
+      index: { unique: true, sparse: true },
+    },
     password: {
       type: String,
-      required: true,
+      required: false,
       select: false,
     },
   },
   { timestamps: true },
 );
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model<IUser>("User", userSchema);
 
 export default User;

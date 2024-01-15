@@ -9,10 +9,11 @@ class UserService {
   async createUser(data: UserData) {
     try {
       const exist = await this.userModel.findOne({
-        user_id: data.user_id,
+        email: data.email,
       });
       if (exist) {
-        throw { stats: 400, message: "User already exists" };
+        //
+        return { error: "User already exists" };
       }
 
       const salt = await bcrypt.genSalt();
@@ -24,7 +25,7 @@ class UserService {
         result = await new_user.save();
       } catch (mongo_error) {
         console.log(mongo_error);
-        throw new Error("Error creating a user");
+        return { error: "can't create a user" };
       }
 
       console.log(result);
@@ -36,14 +37,40 @@ class UserService {
     }
   }
 
+  async createGoogleUser(data: UserData) {
+    try {
+      let user = await this.userModel
+        .findOne({
+          $or: [{ google_id: data.google_id }, { email: data.email }],
+        })
+        .exec();
+
+      if (user) {
+        // If the user exists but doesn't have a google_id, update it
+        if (!user.google_id) {
+          user.google_id = data.google_id;
+          await user.save();
+        }
+      } else {
+        // If no user exists with that email, create a new user
+        user = new this.userModel(data);
+        await user.save();
+      }
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async loginData(data: UserData) {
     try {
       const user = await this.userModel
         .findOne(
           {
-            user_id: data.user_id,
+            email: data.email,
           },
-          { user_id: 1, password: 1 },
+          { email: 1, password: 1 },
         )
         .exec();
 
@@ -55,7 +82,7 @@ class UserService {
 
       return await this.userModel
         .findOne({
-          user_id: data.user_id,
+          email: data.email,
         })
         .exec();
     } catch (err) {

@@ -59,7 +59,6 @@ userController.createToken = (result: TokenData) => {
   try {
     const upload_data = {
       _id: result._id,
-      user_id: result.user_id,
       user_name: result.user_name,
       email: result.email,
     };
