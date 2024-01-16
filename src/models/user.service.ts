@@ -1,7 +1,7 @@
 import User from "../schemas/user.schema";
 import bcrypt from "bcrypt";
 import assert from "assert";
-import { UserData } from "../controllers/interfaces/user.interface";
+import { UserData } from "../interfaces/user.interface";
 
 class UserService {
   constructor(private readonly userModel = User) {}

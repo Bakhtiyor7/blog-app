@@ -2,7 +2,7 @@ import UserService from "../models/user.service";
 import jwt from "jsonwebtoken";
 import assert from "assert";
 import { NextFunction, Request, Response } from "express";
-import { TokenData } from "./interfaces/user.interface";
+import { TokenData } from "../interfaces/user.interface";
 
 let userController: any = {};
 
@@ -88,6 +88,8 @@ userController.checkAuthentication = (req: Request, res: Response) => {
   }
 };
 
+// TODO: Retrieve authenticated Google user
+
 userController.retrieveAuthMember = (
   req: Request,
   res: Response,
@@ -95,8 +97,18 @@ userController.retrieveAuthMember = (
 ) => {
   try {
     const token = req.cookies["access_token"];
-    req.member = token ? jwt.verify(token, process.env.SECRET_TOKEN) : null;
-    next();
+    if (token) {
+      req.member = jwt.verify(token, process.env.SECRET_TOKEN);
+      return next();
+    }
+
+    // Check for Passport (Google) authentication
+    if (req.isAuthenticated && req.isAuthenticated()) {
+      // User is authenticated with Passport
+      return next();
+    }
+    // If neither, user is not authenticated
+    res.status(401).send("User not authenticated");
   } catch (err: any) {
     console.log(`ERROR, cont/retrieveAuthMember, ${err.message}`);
     next();

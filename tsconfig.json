@@ -6,6 +6,6 @@
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
-    "types": ["./src/express-session.d.ts", "./src/sessions.d.ts"]
+    "types": ["./src/types/express-session.d.ts", "./src/types/sessions.d.ts", "./src/types/global.d.ts"]
   }
 }
