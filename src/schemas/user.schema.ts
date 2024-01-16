@@ -1,12 +1,5 @@
 import mongoose from "mongoose";
-
-export interface IUser extends Document {
-  id: mongoose.Types.ObjectId;
-  google_id?: string;
-  email: string;
-  user_name: string;
-  password: string;
-}
+import { IUser } from "../interfaces/user.interface";
 
 const userSchema = new mongoose.Schema(
   {
