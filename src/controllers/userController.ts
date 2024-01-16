@@ -59,7 +59,6 @@ userController.createToken = (result: TokenData) => {
   try {
     const upload_data = {
       _id: result._id,
-      user_id: result.user_id,
       user_name: result.user_name,
       email: result.email,
     };
@@ -79,7 +78,6 @@ userController.checkAuthentication = (req: Request, res: Response) => {
   try {
     console.log("Get: /checkAuthentication");
     let token = req.cookies["access_token"];
-    console.log("token:", token);
 
     const user = token ? jwt.verify(token, process.env.SECRET_TOKEN) : null;
     assert.ok(user, "Not authenticated user");

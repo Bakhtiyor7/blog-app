@@ -1,6 +1,7 @@
-import { userController } from "./controllers/userController";
+import { userController } from "../controllers/userController";
 import express from "express";
-import articleController from "./controllers/articleController";
+import articleController from "../controllers/articleController";
+import passport from "passport";
 
 const router = express.Router();
 
