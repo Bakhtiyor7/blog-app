@@ -4,11 +4,11 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import session from "express-session";
-import router from "./router";
-import "./googleStrategy";
+import router from "./routers/router";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import passport from "passport";
 import User from "./schemas/user.schema";
+import auth_router from "./routers/auth-router";
 
 dotenv.config();
 
@@ -90,20 +90,33 @@ passport.use(
       callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
     },
     async (accessToken, refreshToken, profile, done) => {
-      const user = await User.findOne({ google_id: profile.id });
+      try {
+        console.log("profile:", profile);
+        // Check if user exists with the Google email
+        const existingUser = await User.findOne({
+          email: profile.emails?.[0].value,
+        });
 
-      // If user doesn't exist creates a new user. (similar to sign up)
-      if (!user) {
+        if (existingUser) {
+          // User exists, but signed up traditionally. Link Google ID if not already linked
+          if (!existingUser.google_id) {
+            existingUser.google_id = profile.id;
+            await existingUser.save();
+          }
+          return done(null, existingUser);
+        }
+
+        // If user with the Google email doesn't exist, create a new user
         const newUser = await User.create({
           google_id: profile.id,
           email: profile.emails?.[0].value,
-          // we are using optional chaining because profile.emails may be undefined.
+          // other fields...
         });
-        if (newUser) {
-          done(null, newUser);
-        }
-      } else {
-        done(null, user);
+
+        return done(null, newUser);
+      } catch (error) {
+        console.log(error);
+        throw error;
       }
     },
   ),
@@ -123,14 +136,8 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
-// Google ===========
-// app.use(passport.initialize());
-// app.use(passport.session);
-
-// ===================
-
 //routes
-app.use("/", router);
+app.use("/", router, auth_router);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
