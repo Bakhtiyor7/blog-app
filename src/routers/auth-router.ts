@@ -2,12 +2,20 @@
 import router from "./router";
 import passport from "passport";
 import express from "express";
+import { userController } from "../controllers/userController";
 
 const auth_router = express.Router();
 
+// MAIL authentication routes
+router.post("/signup", userController.signup);
+router.post("/login", userController.login);
+router.get("/logout", userController.logout);
+router.get("/check-login", userController.checkAuthentication);
+
+// GOOGLE auth routes
 router.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] }),
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
 router.get(
   "/auth/google/callback",
@@ -16,7 +24,7 @@ router.get(
   }),
   (req, res) => {
     res.redirect("/auth/success");
-  },
+  }
 );
 
 router.get("/google/logout", (req, res) => {
