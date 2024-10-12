@@ -4,8 +4,8 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import router from "./routers/router";
-import passport from "passport";
 import auth_router from "./routers/auth-router";
+import passport from "passport";
 import { passportConfig } from "./config/passport-config";
 import { sessionStore } from "./config/session-store";
 import { setMember } from "./middlewares/setMember";
@@ -25,13 +25,13 @@ app.use(express.json());
 app.use(
   express.urlencoded({
     extended: true,
-  }),
+  })
 );
 app.use(
   cors({
     credentials: true,
     origin: true,
-  }),
+  })
 );
 app.use(cookieParser());
 app.use(
@@ -43,7 +43,7 @@ app.use(
     store: store,
     resave: true,
     saveUninitialized: true,
-  }),
+  })
 );
 app.use(setMember);
 app.use(passport.initialize());
@@ -51,7 +51,7 @@ app.use(passport.session());
 // ========================
 
 // configurations
-passportConfig(); // passport google config
+passportConfig(); // google passport config
 const db_uri = process.env.MONGODB_URL;
 connectDatabase(db_uri); // db connection config
 
